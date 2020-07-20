@@ -24,6 +24,15 @@ public class FileService {
         }
     }
 
+    public void deleteFile(String filename) throws Exception {
+        if (mapper.getFile(filename) == null) {
+            throw new Exception("No such file to delete.");
+        }
+        if (mapper.delete(filename) < 0) {
+            throw new Exception("Internal error: Could not delete the file");
+        }
+    }
+
     public List<File> getFiles() {
         return mapper.getFiles();
     }
