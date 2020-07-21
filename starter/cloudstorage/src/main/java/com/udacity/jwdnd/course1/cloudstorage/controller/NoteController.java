@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,10 +22,17 @@ public class NoteController {
     private NoteService noteService;
 
     @PostMapping("/notes/add")
-    String addNote(String noteTitle, String noteDescription, RedirectAttributes redirectAttributes) {
+    String addNote(String noteId, String noteTitle, String noteDescription, RedirectAttributes redirectAttributes) {
         try {
-            noteService.addNote(noteTitle, noteDescription);
-            redirectAttributes.addFlashAttribute(NOTE_SUCCESS_KEY, "Note added.");
+            // TODO I really don't like how to detect if it should be added or updated.
+            // TODO How should I manage the noteModal so that action name can be parametrized?
+            if (noteId.isEmpty()) {
+                noteService.addNote(noteTitle, noteDescription);
+                redirectAttributes.addFlashAttribute(NOTE_SUCCESS_KEY, "Note added.");
+            } else {
+                noteService.updateNote(Integer.parseInt(noteId), noteTitle, noteDescription);
+                redirectAttributes.addFlashAttribute(NOTE_SUCCESS_KEY, "Note updated.");
+            }
         } catch (Exception e) {
             // TODO return more meaningful error not exposing potential code structure
             redirectAttributes.addFlashAttribute(NOTE_ERROR_KEY, e.getMessage());
@@ -34,9 +42,9 @@ public class NoteController {
     }
 
     @PostMapping("/notes/delete")
-    String deleteNote(String noteTitle, RedirectAttributes redirectAttributes) {
+    String deleteNote(String noteId, RedirectAttributes redirectAttributes) {
         try {
-            noteService.deleteNote(noteTitle);
+            noteService.deleteNote(Integer.parseInt(noteId));
             redirectAttributes.addFlashAttribute(NOTE_SUCCESS_KEY, "Note deleted.");
         } catch (Exception e) {
             // TODO return more meaningful error not exposing potential code structure

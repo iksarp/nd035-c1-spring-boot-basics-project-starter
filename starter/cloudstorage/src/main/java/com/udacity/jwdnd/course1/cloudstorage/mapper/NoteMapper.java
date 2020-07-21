@@ -11,13 +11,16 @@ public interface NoteMapper {
     @Select("SELECT * FROM NOTES")
     List<Note> getNotes();
 
-    @Select("SELECT * FROM NOTES WHERE notetitle = #{noteTitle}")
-    Note getNote(String noteTitle);
+    @Select("SELECT * FROM NOTES WHERE noteId = #{noteId}")
+    Note getNote(int noteId);
 
     @Insert("INSERT INTO NOTES (notetitle, notedescription) VALUES(#{noteTitle}, #{noteDescription})")
     @Options(useGeneratedKeys = true, keyProperty = "noteId")
-    int insert(Note file);
+    int insert(Note note);
 
-    @Delete("DELETE FROM NOTES WHERE notetitle = #{noteTitle}")
-    int delete(String noteTitle);
+    @Update("UPDATE NOTES SET notetitle = #{title}, notedescription = #{description} WHERE noteId = #{noteId}")
+    int update(int noteId, String title, String description);
+
+    @Delete("DELETE FROM NOTES WHERE noteId = #{noteId}")
+    int delete(int noteId);
 }

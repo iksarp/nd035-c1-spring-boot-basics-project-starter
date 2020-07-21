@@ -17,24 +17,31 @@ public class NoteService {
         if (title.isEmpty() || description.isEmpty()) {
             throw new Exception("Title and description must be not empty");
         }
-        if (mapper.getNote(title) != null) {
-            throw new Exception("Note with this title already exists");
-        }
         if (mapper.insert(new Note(null, title, description)) < 0) {
             throw new Exception("Internal error: Could not add the note");
         }
     }
 
-    public void deleteNote(String title) throws Exception {
-        if (title.isEmpty()) {
+    public void updateNote(int noteId, String title, String description) throws Exception {
+        if (title.isEmpty() || description.isEmpty()) {
             throw new Exception("Title and description must be not empty");
         }
-        if (mapper.getNote(title) == null) {
+        if (mapper.update(noteId, title, description) < 0) {
+            throw new Exception("Internal error: Could not update the note");
+        }
+    }
+
+    public void deleteNote(int noteId) throws Exception {
+        if (mapper.getNote(noteId) == null) {
             throw new Exception("No such note to delete");
         }
-        if (mapper.delete(title) < 0) {
+        if (mapper.delete(noteId) < 0) {
             throw new Exception("Internal error: Could not delete the note");
         }
+    }
+
+    public Note getNote(int noteId) {
+        return mapper.getNote(noteId);
     }
 
     public List<Note> getNotes() {
