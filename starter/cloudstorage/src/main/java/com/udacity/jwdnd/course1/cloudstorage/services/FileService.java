@@ -33,6 +33,10 @@ public class FileService {
         }
     }
 
+    public File getFile(String filename) {
+        return mapper.getFile(filename);
+    }
+
     public List<File> getFiles() {
         return mapper.getFiles();
     }

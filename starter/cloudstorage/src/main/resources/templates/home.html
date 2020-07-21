@@ -25,7 +25,7 @@
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-files" role="tabpanel" aria-labelledby="nav-files-tab">
-                        <form action="#" enctype="multipart/form-data" method="POST" th:action="@{/fileUpload}">
+                        <form action="#" enctype="multipart/form-data" method="POST" th:action="@{/upload}">
                             <div id="success-msg" th:if="${fileSuccess}" class="alert alert-dark">
                                 <span th:text="${fileSuccess}"></span>
                             </div>
@@ -35,10 +35,10 @@
                             <div class="container">
                                 <div class="row" style="margin: 1em;">
                                     <div class="col-sm-2">
-                                        <label for="fileUpload">Upload a New File:</label>
+                                        <label for="upload">Upload a New File:</label>
                                     </div>
                                     <div class="col-sm-6">
-                                        <input type="file" class="form-control-file" id="fileUpload" name="fileUpload">
+                                        <input type="file" class="form-control-file" id="upload" name="upload">
                                     </div>
                                     <div class="col-sm-4">
                                         <button type="submit" class="btn btn-dark">Upload</button>
@@ -55,19 +55,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="file : ${files}">
+                                <tr th:each="filename : ${filenames}">
                                     <td>
-                                        <a target="_blank" class="btn btn-success">View</a>
-
+                                        <form action="#" method="GET" th:action="@{/download}">
+                                            <input type="hidden" name="file" id="fileDownload" th:value="${filename}" />
+                                            <button type="submit" name="submit" value="value" class="btn btn-success">View</button>
+                                        </form>
                                         <form action="#" method="POST" th:action="@{/delete}">
-                                            <input type="hidden" name="file" id="file" th:value="${file.filename}" />
+                                            <input type="hidden" name="file" id="fileDelete" th:value="${filename}" />
                                             <button type="submit" name="submit" value="value" class="btn btn-danger">Delete</button>
                                         </form>
-
-
-<!--                                        <a class="btn btn-danger" th:href="@{/delete}">Delete</a>-->
                                     </td>
-                                    <th scope="row" th:text="${file.filename}">Example file.txt</th>
+                                    <th scope="row" th:text="${filename}">Example file.txt</th>
                                 </tr>
                                 </tbody>
                             </table>
