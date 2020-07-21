@@ -1,7 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
-import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +8,8 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,9 +36,22 @@ public class FileController {
         return "redirect:/home";
     }
 
+    @PostMapping("/delete")
+    String deleteFile(@RequestParam("file") String filename, RedirectAttributes redirectAttributes) {
+        try {
+            fileService.deleteFile(filename);
+            redirectAttributes.addFlashAttribute(FILE_SUCCESS_KEY, "File deleted.");
+        } catch (Exception e) {
+            // TODO return more meaningful error not exposing potential code structure
+            redirectAttributes.addFlashAttribute(FILE_ERROR_KEY, e.getMessage());
+        }
+        return "redirect:/home";
+    }
+
     @GetMapping("/download")
     ResponseEntity<ByteArrayResource> downloadFile(@RequestParam("file") String filename) {
         File file = fileService.getFile(filename);
+        // TODO how to handle missing file? How to show it in HTML?
         ByteArrayResource resource = new ByteArrayResource(file.getFiledata());
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + filename)
@@ -52,26 +60,15 @@ public class FileController {
                 .body(resource);
     }
 
-    @PostMapping("/delete")
-    String deleteFile(@RequestParam("file") String filename, RedirectAttributes redirectAttributes) {
-        try {
-            fileService.deleteFile(filename);
-            redirectAttributes.addFlashAttribute(FILE_SUCCESS_KEY, "File deleted.");
-        } catch (Exception e) {
-            // TODO return more meaningful error not exposing code structure
-            redirectAttributes.addFlashAttribute(FILE_ERROR_KEY, e.getMessage());
-        }
-        return "redirect:/home";
-    }
-
     private void addFile(MultipartFile file, RedirectAttributes redirectAttributes) {
+        // TODO user auth
 //        User user = userService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
         try {
             File newFile = new File(null, file.getOriginalFilename(), file.getContentType(), file.getBytes());//, user.getUserId());
             fileService.addFile(newFile);
             redirectAttributes.addFlashAttribute(FILE_SUCCESS_KEY, "File uploaded.");
         } catch (Exception e) {
-            // TODO return more meaningful error not exposing code structure
+            // TODO return more meaningful error not exposing potential code structure
             redirectAttributes.addFlashAttribute(FILE_ERROR_KEY, e.getMessage());
         }
     }
