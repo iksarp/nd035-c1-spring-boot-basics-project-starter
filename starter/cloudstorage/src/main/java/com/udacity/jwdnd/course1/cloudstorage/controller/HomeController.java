@@ -2,6 +2,8 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
+import com.udacity.jwdnd.course1.cloudstorage.services.CredentialsService;
+import com.udacity.jwdnd.course1.cloudstorage.services.EncryptionService;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +27,14 @@ public class HomeController {
     @Autowired
     private NoteService noteService;
 
+    @Autowired
+    private CredentialsService credentialsService;
+
+    @Autowired
+    private EncryptionService encryptionService;
+
     @GetMapping()
-    public String home(Model model, HttpServletRequest request) {
+    public String home(Model model) {
         model.addAttribute("filenames",
                 fileService.getFiles()
                         .stream()
@@ -34,11 +42,15 @@ public class HomeController {
                         .collect(Collectors.toList()));
 
         model.addAttribute("notes", noteService.getNotes());
+        model.addAttribute("credentials", credentialsService.getCredentials());
 
         if (!model.containsAttribute(NoteController.NOTES_ACTIVE_KEY) &&
                 !model.containsAttribute(CredentialsController.CREDENTIALS_ACTIVE_KEY)) {
             model.addAttribute(FILES_ACTIVE_KEY, true);
         }
+
+        // TODO - QUESTION - it is exposed for decrypting the password - is this the right way?
+        model.addAttribute("encryptionService", encryptionService);
 
         return "home";
     }
