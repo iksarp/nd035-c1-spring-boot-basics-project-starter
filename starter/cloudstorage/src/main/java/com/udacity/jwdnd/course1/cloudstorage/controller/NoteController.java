@@ -31,7 +31,7 @@ public class NoteController {
                 noteService.addNote(userId, noteTitle, noteDescription);
                 redirectAttributes.addFlashAttribute(NOTE_SUCCESS_KEY, "Note added.");
             } else {
-                noteService.updateNote(userId, Integer.parseInt(noteId), noteTitle, noteDescription);
+                noteService.updateNote(userId, noteId, noteTitle, noteDescription);
                 redirectAttributes.addFlashAttribute(NOTE_SUCCESS_KEY, "Note updated.");
             }
         } catch (Exception e) {
@@ -46,7 +46,7 @@ public class NoteController {
     String deleteNote(String noteId, RedirectAttributes redirectAttributes) {
         String userId = userService.getCurrentUserId();
         try {
-            noteService.deleteNote(userId, Integer.parseInt(noteId));
+            noteService.deleteNote(userId, noteId);
             redirectAttributes.addFlashAttribute(NOTE_SUCCESS_KEY, "Note deleted.");
         } catch (Exception e) {
             // TODO return more meaningful error not exposing potential code structure

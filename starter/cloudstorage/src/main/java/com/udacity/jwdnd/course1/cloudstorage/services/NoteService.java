@@ -22,7 +22,7 @@ public class NoteService {
         }
     }
 
-    public void updateNote(String userId, int noteId, String title, String description) throws Exception {
+    public void updateNote(String userId, String noteId, String title, String description) throws Exception {
         if (title.isEmpty() || description.isEmpty()) {
             throw new Exception("Title and description must be not empty");
         }
@@ -31,7 +31,7 @@ public class NoteService {
         }
     }
 
-    public void deleteNote(String userId, int noteId) throws Exception {
+    public void deleteNote(String userId, String noteId) throws Exception {
         if (getNote(userId, noteId) == null) {
             throw new Exception("No such note to delete");
         }
@@ -40,7 +40,7 @@ public class NoteService {
         }
     }
 
-    public Note getNote(String userId, int noteId) {
+    public Note getNote(String userId, String noteId) {
         return mapper.getNote(userId, noteId);
     }
 

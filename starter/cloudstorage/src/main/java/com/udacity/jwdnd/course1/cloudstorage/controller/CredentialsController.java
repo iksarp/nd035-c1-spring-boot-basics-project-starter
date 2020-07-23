@@ -31,7 +31,7 @@ public class CredentialsController {
                 credentialsService.addCredential(userId, url, username, password);
                 redirectAttributes.addFlashAttribute(CREDENTIAL_SUCCESS_KEY, "Credential added.");
             } else {
-                credentialsService.updateCredential(userId, Integer.parseInt(credentialId), url, username, password);
+                credentialsService.updateCredential(userId, credentialId, url, username, password);
                 redirectAttributes.addFlashAttribute(CREDENTIAL_SUCCESS_KEY, "Credential updated.");
             }
         } catch (Exception e) {
@@ -46,7 +46,7 @@ public class CredentialsController {
     String deleteCredential(String credentialId, RedirectAttributes redirectAttributes) {
         String userId = userService.getCurrentUserId();
         try {
-            credentialsService.deleteCredential(userId, Integer.parseInt(credentialId));
+            credentialsService.deleteCredential(userId, credentialId);
             redirectAttributes.addFlashAttribute(CREDENTIAL_SUCCESS_KEY, "Credential deleted.");
         } catch (Exception e) {
             // TODO return more meaningful error not exposing potential code structure

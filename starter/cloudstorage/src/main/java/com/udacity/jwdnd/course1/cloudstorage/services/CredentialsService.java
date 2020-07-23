@@ -22,12 +22,12 @@ public class CredentialsService {
         }
         String key = encryptionService.createNewKey();
         String encryptedPassword = encryptionService.encryptValue(password, key);
-        if (mapper.insert(new Credential(-1, url, username, key, encryptedPassword, userId)) < 0) {
+        if (mapper.insert(new Credential(null, url, username, key, encryptedPassword, userId)) < 0) {
             throw new Exception("Internal error: Could not add the credential");
         }
     }
 
-    public void updateCredential(String userId, int credentialId, String url, String username, String password) throws Exception {
+    public void updateCredential(String userId, String credentialId, String url, String username, String password) throws Exception {
         if (url.isEmpty() || username.isEmpty() || password.isEmpty()) {
             throw new Exception("Url, username and password must be not empty");
         }
@@ -43,7 +43,7 @@ public class CredentialsService {
         }
     }
 
-    public void deleteCredential(String userId, int credentialId) throws Exception {
+    public void deleteCredential(String userId, String credentialId) throws Exception {
         if (getCredential(userId, credentialId) == null) {
             throw new Exception("No such credential to delete");
         }
@@ -52,7 +52,7 @@ public class CredentialsService {
         }
     }
 
-    public Credential getCredential(String userId, int credentialId) {
+    public Credential getCredential(String userId, String credentialId) {
         return mapper.getCredential(userId, credentialId);
     }
 
