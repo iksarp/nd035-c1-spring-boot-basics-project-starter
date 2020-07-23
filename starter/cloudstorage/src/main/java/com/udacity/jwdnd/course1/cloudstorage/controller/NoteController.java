@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
+import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,16 +18,20 @@ public class NoteController {
     @Autowired
     private NoteService noteService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/notes/add")
     String addNote(String noteId, String noteTitle, String noteDescription, RedirectAttributes redirectAttributes) {
+        String userId = userService.getCurrentUserId();
         try {
             // TODO I really don't like how to detect if it should be added or updated.
             // TODO How should I manage the noteModal so that action name can be parametrized?
             if (noteId.isEmpty()) {
-                noteService.addNote(noteTitle, noteDescription);
+                noteService.addNote(userId, noteTitle, noteDescription);
                 redirectAttributes.addFlashAttribute(NOTE_SUCCESS_KEY, "Note added.");
             } else {
-                noteService.updateNote(Integer.parseInt(noteId), noteTitle, noteDescription);
+                noteService.updateNote(userId, Integer.parseInt(noteId), noteTitle, noteDescription);
                 redirectAttributes.addFlashAttribute(NOTE_SUCCESS_KEY, "Note updated.");
             }
         } catch (Exception e) {
@@ -39,8 +44,9 @@ public class NoteController {
 
     @PostMapping("/notes/delete")
     String deleteNote(String noteId, RedirectAttributes redirectAttributes) {
+        String userId = userService.getCurrentUserId();
         try {
-            noteService.deleteNote(Integer.parseInt(noteId));
+            noteService.deleteNote(userId, Integer.parseInt(noteId));
             redirectAttributes.addFlashAttribute(NOTE_SUCCESS_KEY, "Note deleted.");
         } catch (Exception e) {
             // TODO return more meaningful error not exposing potential code structure

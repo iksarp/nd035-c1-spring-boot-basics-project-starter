@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.services.CredentialsService;
+import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,16 +18,20 @@ public class CredentialsController {
     @Autowired
     private CredentialsService credentialsService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/credentials/add")
     String addCredentials(String credentialId, String url, String username, String password, RedirectAttributes redirectAttributes) {
+        String userId = userService.getCurrentUserId();
         try {
             // TODO I really don't like how to detect if it should be added or updated.
             // TODO How should I manage the modal so that action name can be parametrized?
             if (credentialId.isEmpty()) {
-                credentialsService.addCredential(url, username, password);
+                credentialsService.addCredential(userId, url, username, password);
                 redirectAttributes.addFlashAttribute(CREDENTIAL_SUCCESS_KEY, "Credential added.");
             } else {
-                credentialsService.updateCredential(Integer.parseInt(credentialId), url, username, password);
+                credentialsService.updateCredential(userId, Integer.parseInt(credentialId), url, username, password);
                 redirectAttributes.addFlashAttribute(CREDENTIAL_SUCCESS_KEY, "Credential updated.");
             }
         } catch (Exception e) {
@@ -39,8 +44,9 @@ public class CredentialsController {
 
     @PostMapping("/credentials/delete")
     String deleteCredential(String credentialId, RedirectAttributes redirectAttributes) {
+        String userId = userService.getCurrentUserId();
         try {
-            credentialsService.deleteCredential(Integer.parseInt(credentialId));
+            credentialsService.deleteCredential(userId, Integer.parseInt(credentialId));
             redirectAttributes.addFlashAttribute(CREDENTIAL_SUCCESS_KEY, "Credential deleted.");
         } catch (Exception e) {
             // TODO return more meaningful error not exposing potential code structure

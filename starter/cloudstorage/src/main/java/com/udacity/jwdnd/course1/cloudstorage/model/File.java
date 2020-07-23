@@ -6,16 +6,14 @@ public class File {
     private String filename;
     private String contentType;
     private byte[] filedata;
-//    private String fileSize;
-//    private int userId;
+    private String userid;
 
-    public File(String fileId, String filename, String contentType, byte[] filedata) {//, int userId) {
+    public File(String fileId, String filename, String contentType, byte[] filedata, String userId) {
         this.fileId = fileId;
         this.filename = filename;
         this.contentType = contentType;
         this.filedata = filedata;
-//        this.fileSize = fileSize;
-//        this.userId = userId;
+        this.userid = userId;
     }
 
     public String getFileId() {
@@ -42,22 +40,13 @@ public class File {
         this.contentType = contentType;
     }
 
-//    public String getFileSize() {
-//        return fileSize;
-//    }
-//
-//    public void setFileSize(String fileSize) {
-//        this.fileSize = fileSize;
-//    }
+    public String getUserid() {
+        return userid;
+    }
 
-    //    public int getUserId() {
-//        return userId;
-//    }
-//
-//    public void setUserId(int userId) {
-//        this.userId = userId;
-//    }
-
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
 
     public byte[] getFiledata() {
         return filedata;

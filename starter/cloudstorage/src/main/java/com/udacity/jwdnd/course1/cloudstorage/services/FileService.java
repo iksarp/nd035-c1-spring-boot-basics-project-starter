@@ -16,7 +16,7 @@ public class FileService {
     }
 
     public void addFile(File file) throws Exception {
-        if (mapper.getFile(file.getFilename()) != null) {
+        if (getFile(file.getUserid(), file.getFilename()) != null) {
             throw new Exception("File with this name already exists");
         }
         if (mapper.insert(file) < 0) {
@@ -24,20 +24,20 @@ public class FileService {
         }
     }
 
-    public void deleteFile(String filename) throws Exception {
-        if (mapper.getFile(filename) == null) {
+    public void deleteFile(String userId, String filename) throws Exception {
+        if (getFile(userId, filename) == null) {
             throw new Exception("No such file to delete.");
         }
-        if (mapper.delete(filename) < 0) {
+        if (mapper.delete(userId, filename) < 0) {
             throw new Exception("Internal error: Could not delete the file");
         }
     }
 
-    public File getFile(String filename) {
-        return mapper.getFile(filename);
+    public File getFile(String userId, String filename) {
+        return mapper.getFile(userId, filename);
     }
 
-    public List<File> getFiles() {
-        return mapper.getFiles();
+    public List<File> getFiles(String userId) {
+        return mapper.getFiles(userId);
     }
 }

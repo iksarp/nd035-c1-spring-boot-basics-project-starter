@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
+import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +25,7 @@ public class FileController {
 
     @Autowired
     private FileService fileService;
+
     @Autowired
     private UserService userService;
 
@@ -39,10 +42,11 @@ public class FileController {
     @PostMapping("/delete")
     String deleteFile(@RequestParam("file") String filename, RedirectAttributes redirectAttributes) {
         try {
-            fileService.deleteFile(filename);
+            String userId = userService.getCurrentUserId();
+            fileService.deleteFile(userId, filename);
             redirectAttributes.addFlashAttribute(FILE_SUCCESS_KEY, "File deleted.");
         } catch (Exception e) {
-            // TODO return more meaningful error not exposing potential code structure
+            // could be improved -  return more meaningful error not exposing potential code structure
             redirectAttributes.addFlashAttribute(FILE_ERROR_KEY, e.getMessage());
         }
         return "redirect:/home";
@@ -50,7 +54,8 @@ public class FileController {
 
     @GetMapping("/download")
     ResponseEntity<ByteArrayResource> downloadFile(@RequestParam("file") String filename) {
-        File file = fileService.getFile(filename);
+        String userId = userService.getCurrentUserId();
+        File file = fileService.getFile(userId, filename);
         // TODO how to handle missing file? How to show it in HTML?
         ByteArrayResource resource = new ByteArrayResource(file.getFiledata());
         return ResponseEntity.ok()
@@ -61,14 +66,12 @@ public class FileController {
     }
 
     private void addFile(MultipartFile file, RedirectAttributes redirectAttributes) {
-        // TODO user auth
-//        User user = userService.getUser(SecurityContextHolder.getContext().getAuthentication().getName());
         try {
-            File newFile = new File(null, file.getOriginalFilename(), file.getContentType(), file.getBytes());//, user.getUserId());
+            File newFile = new File(null, file.getOriginalFilename(), file.getContentType(), file.getBytes(), userService.getCurrentUserId());
             fileService.addFile(newFile);
             redirectAttributes.addFlashAttribute(FILE_SUCCESS_KEY, "File uploaded.");
         } catch (Exception e) {
-            // TODO return more meaningful error not exposing potential code structure
+            // could be improved - return more meaningful error not exposing potential code structure
             redirectAttributes.addFlashAttribute(FILE_ERROR_KEY, e.getMessage());
         }
     }

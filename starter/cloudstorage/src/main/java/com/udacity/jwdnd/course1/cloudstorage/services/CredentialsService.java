@@ -16,47 +16,47 @@ public class CredentialsService {
     @Autowired
     private EncryptionService encryptionService;
 
-    public void addCredential(String url, String username, String password) throws Exception {
+    public void addCredential(String userId, String url, String username, String password) throws Exception {
         if (url.isEmpty() || username.isEmpty() || password.isEmpty()) {
             throw new Exception("Url, username and password must be not empty");
         }
         String key = encryptionService.createNewKey();
         String encryptedPassword = encryptionService.encryptValue(password, key);
-        if (mapper.insert(new Credential(-1, url, username, key, encryptedPassword)) < 0) {
+        if (mapper.insert(new Credential(-1, url, username, key, encryptedPassword, userId)) < 0) {
             throw new Exception("Internal error: Could not add the credential");
         }
     }
 
-    public void updateCredential(int credentialId, String url, String username, String password) throws Exception {
+    public void updateCredential(String userId, int credentialId, String url, String username, String password) throws Exception {
         if (url.isEmpty() || username.isEmpty() || password.isEmpty()) {
             throw new Exception("Url, username and password must be not empty");
         }
 
-        Credential credential = mapper.getCredential(credentialId);
+        Credential credential = getCredential(userId, credentialId);
         if (credential == null) {
             throw new Exception("No such credential to update");
         }
 
         String encryptedPassword = encryptionService.encryptValue(password, credential.getKey());
-        if (mapper.update(credentialId, url, username, encryptedPassword) < 0) {
+        if (mapper.update(userId, credentialId, url, username, encryptedPassword) < 0) {
             throw new Exception("Internal error: Could not update the credential");
         }
     }
 
-    public void deleteCredential(int credentialId) throws Exception {
-        if (mapper.getCredential(credentialId) == null) {
+    public void deleteCredential(String userId, int credentialId) throws Exception {
+        if (getCredential(userId, credentialId) == null) {
             throw new Exception("No such credential to delete");
         }
-        if (mapper.delete(credentialId) < 0) {
+        if (mapper.delete(userId, credentialId) < 0) {
             throw new Exception("Internal error: Could not delete the credential");
         }
     }
 
-    public Credential getCredential(int credentialId) {
-        return mapper.getCredential(credentialId);
+    public Credential getCredential(String userId, int credentialId) {
+        return mapper.getCredential(userId, credentialId);
     }
 
-    public List<Credential> getCredentials() {
-        return mapper.getCredentials();
+    public List<Credential> getCredentials(String userId) {
+        return mapper.getCredentials(userId);
     }
 }
