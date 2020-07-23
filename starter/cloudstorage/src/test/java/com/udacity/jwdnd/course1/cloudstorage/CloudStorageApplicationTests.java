@@ -1,9 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
-import com.udacity.jwdnd.course1.cloudstorage.pages.HomePage;
-import com.udacity.jwdnd.course1.cloudstorage.pages.LoginPage;
-import com.udacity.jwdnd.course1.cloudstorage.pages.NotesPage;
-import com.udacity.jwdnd.course1.cloudstorage.pages.SignUpPage;
+import com.udacity.jwdnd.course1.cloudstorage.pages.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,6 +27,7 @@ class CloudStorageApplicationTests {
 	private LoginPage loginPage;
 	private HomePage homePage;
 	private NotesPage notesPage;
+	private CredentialsPage credentialsPage;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -107,6 +105,38 @@ class CloudStorageApplicationTests {
 		notesPage.clickDeleteNote(0);
 		assertEquals(1, notesPage.getNotesCount());
 		assertEquals("Note deleted.", notesPage.getSuccessText());
+	}
+
+	@Test
+	void credentialsTab() throws InterruptedException {
+		givenCreatedAccountAndLoggedIn();
+
+		homePage = new HomePage(driver);
+		homePage.clickCredentialTab();
+
+		credentialsPage = new CredentialsPage(driver);
+		credentialsPage.clickAddCredential();
+		credentialsPage.submitCredentialsData("some url","some username", "some pwd");
+		assertEquals("some url", credentialsPage.getCredentialUrl(0));
+		assertEquals("some username", credentialsPage.getCredentialUsername(0));
+		assertEquals("Credential added.", credentialsPage.getSuccessText());
+
+		credentialsPage.clickEditCredential(0);
+		credentialsPage.submitCredentialsData("edited url", "edited username", "edited pwd");
+		assertEquals("edited url", credentialsPage.getCredentialUrl(0));
+		assertEquals("edited username", credentialsPage.getCredentialUsername(0));
+		assertEquals("Credential updated.", credentialsPage.getSuccessText());
+
+		credentialsPage.clickAddCredential();
+		credentialsPage.submitCredentialsData("some url 2", "some username 2", "some pwd 2");
+		assertEquals(2, credentialsPage.getCredentialsCount());
+		assertEquals("some url 2", credentialsPage.getCredentialUrl(1));
+		assertEquals("some username 2", credentialsPage.getCredentialUsername(1));
+		assertEquals("Credential added.", credentialsPage.getSuccessText());
+
+		credentialsPage.clickDeleteCredential(0);
+		assertEquals(1, credentialsPage.getCredentialsCount());
+		assertEquals("Credential deleted.", credentialsPage.getSuccessText());
 	}
 
 	private void givenCreatedAccountAndLoggedIn() throws InterruptedException {

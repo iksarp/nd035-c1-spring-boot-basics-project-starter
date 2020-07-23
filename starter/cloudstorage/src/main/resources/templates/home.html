@@ -149,7 +149,7 @@
                             <span th:text="${credentialError}"></span>
                         </div>
 
-                        <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showCredentialModal()">
+                        <button id = "show-credential-modal"style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showCredentialModal()">
                             + Add a New Credential
                         </button>
 
@@ -166,16 +166,16 @@
                                 <tbody th:each="credential : ${credentials}">
                                 <tr>
                                     <td>
-                                        <button type="button" class="btn btn-success" th:attr="onclick=|showCredentialModal('${credential.credentialid}', '${credential.url}', '${credential.username}', '${encryptionService.decryptValue(credential.password, credential.key)}')|">Edit</button>
+                                        <button id="rowCredentialEdit" type="button" class="btn btn-success" th:attr="onclick=|showCredentialModal('${credential.credentialid}', '${credential.url}', '${credential.username}', '${encryptionService.decryptValue(credential.password, credential.key)}')|">Edit</button>
 
                                         <form action="#" method="POST" th:action="@{/credentials/delete}">
-                                            <input type="hidden" name="credentialId" id="credentialDelete" th:value="${credential.credentialid}" />
-                                            <button type="submit" name="submit" value="value" class="btn btn-danger">Delete</button>
+                                            <input type="hidden" name="credentialId"  th:value="${credential.credentialid}" />
+                                            <button id="rowCredentialDelete" type="submit" name="submit" value="value" class="btn btn-danger">Delete</button>
                                         </form>
                                     </td>
-                                    <th scope="row" th:text="${credential.url}">Example Credential URL</th>
-                                    <td th:text="${credential.username}">Example Credential Username</td>
-                                    <td th:text="${credential.password}">Example Credential Password</td>
+                                    <th id="rowCredentialUrl" scope="row" th:text="${credential.url}">Example Credential URL</th>
+                                    <td id="rowCredentialUsername" th:text="${credential.username}">Example Credential Username</td>
+                                    <td id="rowCredentialPassword" th:text="${credential.password}">Example Credential Password</td>
                                 </tr>
                                 </tbody>
                             </table>
