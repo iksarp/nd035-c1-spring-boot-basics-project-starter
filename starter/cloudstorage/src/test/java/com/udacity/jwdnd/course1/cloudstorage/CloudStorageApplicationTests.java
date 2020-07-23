@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
 
+	// I am using many Thread.sleep() in page objects, because I would get WebDriverWait to work deterministically! :(
+
 	@LocalServerPort
 	private int port;
 
