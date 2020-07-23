@@ -12,7 +12,7 @@
         <div class="container">
             <div id="logoutDiv">
                 <form action="#" method="POST" th:action="@{/logout}">
-                    <button type="submit" class="btn btn-secondary float-right">Logout</button>
+                    <button id="logout" type="submit" class="btn btn-secondary float-right">Logout</button>
                 </form>
             </div>
             <div id="contentDiv" style="clear: right;">
@@ -80,7 +80,7 @@
                             <span th:text="${noteError}"></span>
                         </div>
 
-                        <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showNoteModal()">
+                        <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" id="show-note-modal" onclick="showNoteModal()">
                             + Add a New Note
                         </button>
 
@@ -96,15 +96,15 @@
                                 <tbody th:each="note : ${notes}">
                                     <tr>
                                         <td>
-                                            <button type="button" class="btn btn-success" th:attr="onclick=|showNoteModal('${note.noteId}', '${note.noteTitle}', '${note.noteDescription}')|">Edit</button>
+                                            <button id="rowNoteEdit" type="button" class="btn btn-success" th:attr="onclick=|showNoteModal('${note.noteId}', '${note.noteTitle}', '${note.noteDescription}')|">Edit</button>
 
                                             <form action="#" method="POST" th:action="@{/notes/delete}">
                                                 <input type="hidden" name="noteId" id="noteDelete" th:value="${note.noteId}" />
-                                                <button type="submit" name="submit" value="value" class="btn btn-danger">Delete</button>
+                                                <button id="rowNoteDelete" type="submit" name="submit" value="value" class="btn btn-danger">Delete</button>
                                             </form>
                                         </td>
-                                        <th scope="row" th:text="${note.noteTitle}">Example Note Title</th>
-                                        <td th:text="${note.noteDescription}">Example Note Description </td>
+                                        <th id="rowNoteTitle" scope="row" th:text="${note.noteTitle}">Example Note Title</th>
+                                        <td id="rowNoteDesc" th:text="${note.noteDescription}">Example Note Description </td>
                                     </tr>
                                 </tbody>
                             </table>
